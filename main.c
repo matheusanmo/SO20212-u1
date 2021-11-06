@@ -1,4 +1,4 @@
-#include <stdio.h>  // printf FILE fprintf
+#include <stdio.h>  // printf FILE fprintf fopen fclose
 #include <stdlib.h> // malloc rand srand
 #include <time.h>   // time
 
@@ -10,7 +10,8 @@ void auxiliar(int l, int c, FILE* fhandle) {
         return;
     }
 
-    srand((unsigned) time(NULL)); // usando time como seed pro rng
+    // usando time como seed pro rng
+    srand((unsigned) time(NULL)); 
 
     for (int i = 0; i < l; i++) {
         for (int j = 0; j < c; j++) {
@@ -18,6 +19,18 @@ void auxiliar(int l, int c, FILE* fhandle) {
         }
         fprintf(fhandle, "\n");
     }
+    return;
+}
+
+void print_help_gen() {
+    printf("  `matrix gen linhas colunas filename`:\n");
+    printf("    gera matrix de inteiros de tamanho linhas x colunas e salva em filename (sera truncado)\n");
+    return;
+}
+
+void print_help() {
+    printf("usage: `matrix {gen, seq, thr, proc} args`\n");
+    print_help_gen();
     return;
 }
 
