@@ -1,0 +1,4 @@
+*.out
+doxygen_out/*
+matrices/*
+

@@ -1,3 +1,7 @@
+/** \file main.c
+ * Multiplicacao matrizes, seq, thread, fork.
+ */
+
 #include <stdio.h>    // printf FILE fprintf fopen fclose rewind fscanf
 #include <stdlib.h>   // malloc rand srand
 #include <sys/time.h> // gettimeofday struct-timeval 
@@ -144,7 +148,7 @@ void auxiliar(int l, int c, FILE* fhandle) {
     // escrevendo linhas e colunas na primeira linha 
     fprintf(fhandle, "%d %d\n", l, c);
 
-    // nao fazer nada quando for pedida matrix de tamanho indefinido
+    // nao fazer nada quando for pedida matriz de dimensoes indevidas
     if (l <= 0 || c <= 0) { 
         return;
     }
