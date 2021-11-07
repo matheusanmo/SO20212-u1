@@ -1,5 +1,6 @@
-/** \file main.c
- * Multiplicacao matrizes, seq, thread, fork.
+/** \file file.h
+ * A brief file description.
+ * A more elaborated file description.
  */
 
 #include <stdio.h>    // printf FILE fprintf fopen fclose rewind fscanf
@@ -37,7 +38,8 @@ void test_print_error() {
 }
 
 /**
- * Retorna parte microsegundos do horario UNIX como unsigned int.
+ * Retorna parte microsegundos do horario UNIX como `unsigned int`. Usado
+ * como seed para `srand()`.
  */
 unsigned timeofday_usec() {
     struct timeval tv;
@@ -55,7 +57,7 @@ void test_timeofday_usec() {
  *
  * @param t0 momento inicial.
  * @param t1 momento final.
- * @return tempo em milisegundos decorrido entre t0 e t1.
+ * @return tempo em milisegundos decorrido entre os argumentos.
  */
 long elapsed_miliseconds(const struct timeval t0, const struct timeval t1) {
     long delta_sec  = (long) (t1.tv_sec  - t0.tv_sec ) * 1000; // tempo em milisegundos 
@@ -102,11 +104,11 @@ void print_help() {
 /**
  * Recebe handle de um arquivo de texto contendo uma matriz gravada com
  * `auxiliar()` e retorna ponteiro para seus elementos dispostos linearmente
- * num array (alocado com `malloc`, que deve ser `free()` depois) ou NULL 
+ * num array (alocado com `malloc`, que deve ser `free()` depois) ou `NULL` 
  * se a matriz tiver dimensoes indevidas.
  * 
  * @param[in,out] fhandle arquivo de texto que sera rebobinado e lido como matriz.
- * @return ponteiro para array de elementos da matriz lida ou NULL.
+ * @return ponteiro para array de elementos da matriz lida ou `NULL`.
  * @see auxiliar()
  */
 int* alloc_matrix(FILE* fhandle) {
@@ -138,11 +140,13 @@ void test_alloc_matrix() {
 
 /**
  * Gera matrix de `int`s aleatorios e salva num arquivo de texto. Cuidado: 
- * `fhandle` sera truncado.
+ * `fhandle` sera truncado. `alloc_matrix()` pode ser usado para carregar a
+ * matriz na heap.
  *
  * @param      l       quantidade de linhas da matrix a ser gerada.
  * @param      c       quantidade de colunas da matrix a ser gerada.
  * @param[out] fhandle arquivo de texto no qual a matriz sera gravada.
+ * @see alloc_matrix()
  */
 void auxiliar(int l, int c, FILE* fhandle) { 
     // escrevendo linhas e colunas na primeira linha 
@@ -170,6 +174,18 @@ void teste_auxiliar() {
     // TODO
 }
 
+/**
+ * Recebe dois arquivos de textos contendo matrizes geradas por `auxiliar()` e 
+ * multiplica as duas matrizes de forma serial (sem concurrencia). Em seguida 
+ * escreve em `mout` o tempo real (calculado usando `elapsed_miliseconds()`) 
+ * gasto no calculo de cada elemento da matriz produto.
+ * Cuidado: `m1` e `m2` serao rebobinados com `rewind()`. `mout` sera truncado 
+ * antes de ser usado.
+ *
+ * @param[in, out] m1 matriz da esquerda da multiplicacao.
+ * @param[in, out] m2 matriz da direita da multiplicacao.
+ * @param[out]     mout matriz de saida.
+ */
 void sequential(FILE* m1, FILE* m2, FILE* mout) {
     rewind(m1);
     rewind(m2);
