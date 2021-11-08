@@ -4,8 +4,9 @@
  */
 
 #include <stdio.h>    // printf FILE fprintf fopen fclose rewind fscanf
-#include <stdlib.h>   // malloc rand srand
-#include <sys/time.h> // gettimeofday struct-timeval 
+#include <stdlib.h>   // malloc rand srand free
+#include <sys/time.h> // gettimeofday timeval 
+#include <string.h>   // strcmp
 #include <unistd.h>   // getppid
 
 /**
@@ -102,7 +103,7 @@ void print_help_gen() {
  * Imprime texto de ajuda da invocacao no stdout.
  */
 void print_help() {
-    printf("usage: `matrix {gen, seq, thr, proc} args`\n");
+    printf("usage: `matrix {help, gen, seq, thr, proc, test} args`\n");
     print_help_gen();
     return;
 }
@@ -234,7 +235,14 @@ void test_routine() {
 }
 
 int main(int argc, char* argv[]) {
-    test_routine();
-    return 0;
+    if (argc < 2 || !strcmp(argv[1], "help")) {
+        print_help();
+        return 0;
+    }
+
+    if (!strcmp(argv[1], "test")) {
+        test_routine();
+        return 0;
+    }
 }
 
