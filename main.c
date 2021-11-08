@@ -6,6 +6,7 @@
 #include <stdio.h>    // printf FILE fprintf fopen fclose rewind fscanf
 #include <stdlib.h>   // malloc rand srand
 #include <sys/time.h> // gettimeofday struct-timeval 
+#include <unistd.h>   // getppid
 
 /**
  * Escreve string no stdout adornada como mensagem de teste.
@@ -49,7 +50,12 @@ unsigned timeofday_usec() {
 
 void test_timeofday_usec() {
     print_test(__FUNCTION__);
-    printf("%u \n%u \n%u \n", timeofday_usec(), timeofday_usec(), timeofday_usec());
+    printf("%u\n", timeofday_usec());
+    getppid();
+    printf("%u\n", timeofday_usec());
+    for (int i = 0; i < 10000; i++) 
+        free(malloc(sizeof(char) * i));
+    printf("%u\n", timeofday_usec());
 }
 
 /**
@@ -76,7 +82,7 @@ void test_elapsed_miliseconds() {
 
     int sink = 1;
     for (int i = 0; i < 256; i++) {
-        sink += 5;
+        sink *= 5;
     }
 
     gettimeofday(&t2, NULL);
@@ -104,7 +110,7 @@ void print_help() {
 /**
  * Recebe handle de um arquivo de texto contendo uma matriz gravada com
  * `auxiliar()` e retorna ponteiro para seus elementos dispostos linearmente
- * num array (alocado com `malloc`, que deve ser `free()` depois) ou `NULL` 
+ * num array (alocado com `malloc`, que deve ser `free` depois) ou `NULL` 
  * se a matriz tiver dimensoes indevidas.
  * 
  * @param[in,out] fhandle arquivo de texto que sera rebobinado e lido como matriz.
@@ -170,7 +176,7 @@ void auxiliar(int l, int c, FILE* fhandle) {
     return;
 }
 
-void teste_auxiliar() {
+void test_auxiliar() {
     // TODO
 }
 
@@ -213,16 +219,22 @@ void sequential(FILE* m1, FILE* m2, FILE* mout) {
     return;
 }
 
+void test_sequential() {
+    //TODO
+}
+
+void test_routine() {
+    test_alloc_matrix();
+    test_auxiliar();
+    test_elapsed_miliseconds();
+    test_print_error();
+    test_print_test();
+    test_sequential();
+    test_timeofday_usec();
+}
+
 int main(int argc, char* argv[]) {
-    FILE* file1   = fopen("m1", "w+t");
-    FILE* file2   = fopen("m2", "w+t");
-    FILE* fileseq = fopen("mseq", "w+t");
-    auxiliar(3, 3, file1);
-    auxiliar(3, 3, file2);
-    sequential(file1, file2, fileseq);
-    fclose(file1);
-    fclose(file2);
-    fclose(fileseq);
+    test_routine();
     return 0;
 }
 
