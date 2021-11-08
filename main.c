@@ -73,17 +73,17 @@ long elapsed_miliseconds(const struct timeval t0, const struct timeval t1) {
 
 void test_elapsed_miliseconds() {
     print_test(__FUNCTION__);
-    struct timeval t1;
+    struct timeval t1, t2;
     gettimeofday(&t1, NULL);
 
-    struct timeval t2;
+    for (int i = 0; i < 9999; i++)
+        getppid();
+
     gettimeofday(&t2, NULL);
     printf("%ld\n", elapsed_miliseconds(t1, t2));
 
-    int sink = 1;
-    for (int i = 0; i < 256; i++) {
-        sink *= 5;
-    }
+    for (int i = 0; i < 9999; i++)
+        free(malloc(sizeof(char) * i));
 
     gettimeofday(&t2, NULL);
     printf("%ld\n", elapsed_miliseconds(t1, t2));
