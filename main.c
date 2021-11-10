@@ -3,8 +3,9 @@
  * A more elaborated file description.
  */
 
-#include <stdio.h>    // printf FILE fprintf fopen fclose rewind fscanf
-#include <stdlib.h>   // malloc rand srand free
+#include <stdio.h>    // printf FILE fprintf fopen fclose rewind fscanf tmpfile
+                      //
+#include <stdlib.h>   // malloc rand srand free strtol
 #include <sys/time.h> // gettimeofday timeval 
 #include <string.h>   // strcmp
 #include <unistd.h>   // getppid
@@ -103,7 +104,7 @@ void print_help_gen() {
  * Imprime texto de ajuda da invocacao no stdout.
  */
 void print_help() {
-    printf("usage: `matrix {help, gen, seq, thr, proc, test} args`\n");
+    printf("usage: `matrix {help, gen, seq, thr, proc, test} [args]`\n");
     print_help_gen();
     return;
 }
@@ -155,8 +156,10 @@ void test_alloc_matrix() {
  * @param[out] fhandle arquivo de texto no qual a matriz sera gravada.
  * @see alloc_matrix()
  */
-void auxiliar(int l, int c, FILE* fhandle) { 
+void auxiliar(int l, int c, char* filepath) { 
+    printf("> Gravando matriz %d, %d em %s.\n", l, c, filepath);
     // escrevendo linhas e colunas na primeira linha 
+    FILE* fhandle = fopen(filepath, "wt");
     fprintf(fhandle, "%d %d\n", l, c);
 
     // nao fazer nada quando for pedida matriz de dimensoes indevidas
@@ -178,7 +181,10 @@ void auxiliar(int l, int c, FILE* fhandle) {
 }
 
 void test_auxiliar() {
-    // TODO
+    //FILE* fhandle = tmpfile();
+    //TODO
+
+
 }
 
 /**
@@ -244,5 +250,18 @@ int main(int argc, char* argv[]) {
         test_routine();
         return 0;
     }
+
+    if (!strcmp(argv[1], "gen")) {
+        if (argc < 5) {
+            print_help_gen();
+            return 0;
+        }
+        auxiliar(strtol(argv[2], NULL, 10), strtol(argv[3], NULL, 10), argv[4]);
+        return 0;
+    }
+
+    printf("> Ma invocacao.\n");
+    print_help();
+    return 1;
 }
 
