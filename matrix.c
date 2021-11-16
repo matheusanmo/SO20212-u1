@@ -61,3 +61,22 @@ int matrix_index_coord(Matrix m, int index, int linecol[2]) {
     return 0;
 }
 
+void matrix_print(Matrix m) {
+    printf("Matriz %d x %d (%d elementos):\n", m.lines, m.columns, m.lines * m.columns);
+    int elem_index = 0;
+    for (int i = 0; i < m.lines; i++) {
+        for (int j = 0; j < m.columns; j++) {
+            printf("%d ", m.elems[elem_index]);
+            elem_index++;
+        }
+        printf("\n");
+    }
+    printf("\n");
+    return;
+}
+
+void matrix_test_routine(void) {
+    return;
+}
+
+

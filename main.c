@@ -1,101 +1,12 @@
-/** \file file.h
- * A brief file description.
- * A more elaborated file description.
- */
-
-#include <stdio.h>    // printf FILE fprintf fopen fclose rewind fscanf tmpfile
-                      //
-#include <stdlib.h>   // malloc rand srand free strtol
-#include <sys/time.h> // gettimeofday timeval 
+#include "matrix.h"
+#include <stdio.h> // printf
 #include <string.h>   // strcmp
-#include <unistd.h>   // getppid
-
-/**
- * Escreve string no stdout adornada como mensagem de teste.
- *
- * @param s string que sera imprimida como parte da mensagem de teste.
- */
-void print_test(const char* s) {
-    printf(">>> TESTE: %s\n", s);
-    return;
-}
-
-void test_print_test() {
-    print_test(__FUNCTION__);
-    print_test("testando print_test");
-}
-
-/**
- * Escreve string no stdout adornada como mensagem de erro.
- *
- * @param s string que sera imprimida como parte da mensagem de erro.
- */
-void print_error(const char* s) {
-    printf("!!! ERRO:%s:%d:%s\n", __FILE__, __LINE__, s);
-    return;
-}
-
-void test_print_error() {
-    print_test(__FUNCTION__);
-    print_error("test_print_error.");
-}
-
-/**
- * Retorna parte microsegundos do horario UNIX como `unsigned int`. Usado
- * como seed para `srand()`.
- */
-unsigned timeofday_usec() {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (unsigned) tv.tv_usec;
-}
-
-void test_timeofday_usec() {
-    print_test(__FUNCTION__);
-    printf("%u\n", timeofday_usec());
-    getppid();
-    printf("%u\n", timeofday_usec());
-    for (int i = 0; i < 10000; i++) 
-        free(malloc(sizeof(char) * i));
-    printf("%u\n", timeofday_usec());
-}
-
-/**
- * Calcula quantidade de milisegundos entre dois `timeval`, i.e., `t1 - t0`.
- *
- * @param t0 momento inicial.
- * @param t1 momento final.
- * @return tempo em milisegundos decorrido entre os argumentos.
- */
-long elapsed_miliseconds(const struct timeval t0, const struct timeval t1) {
-    long delta_sec  = (long) (t1.tv_sec  - t0.tv_sec ) * 1000; // tempo em milisegundos 
-    long delta_usec = (long) (t1.tv_usec - t0.tv_usec) / 1000; // tempo em milisegundos
-    return delta_sec + delta_usec;
-}
-
-void test_elapsed_miliseconds() {
-    print_test(__FUNCTION__);
-    struct timeval t1, t2;
-    gettimeofday(&t1, NULL);
-
-    for (int i = 0; i < 9999; i++)
-        getppid();
-
-    gettimeofday(&t2, NULL);
-    printf("%ld\n", elapsed_miliseconds(t1, t2));
-
-    for (int i = 0; i < 9999; i++)
-        free(malloc(sizeof(char) * i));
-
-    gettimeofday(&t2, NULL);
-    printf("%ld\n", elapsed_miliseconds(t1, t2));
-}
 
 /**
  * Imprime texto de ajuda da invocacao para gerar matrizes.
  */
-void print_help_gen() {
-    printf("  `matrix gen linhas colunas filename`:\n");
+void print_help_auxiliar() {
+    printf("  `matrix aux linhas colunas filename`:\n");
     printf("    gera matrix de inteiros de tamanho linhas x colunas e salva em filename (sera truncado)\n");
     return;
 }
@@ -104,140 +15,9 @@ void print_help_gen() {
  * Imprime texto de ajuda da invocacao no stdout.
  */
 void print_help() {
-    printf("usage: `matrix {help, gen, seq, thr, proc, test} [args]`\n");
-    print_help_gen();
+    printf("usage: `matrix {help, aux, seq, thr, frk, test} [args]`\n");
+    print_help_auxiliar();
     return;
-}
-
-/**
- * Recebe handle de um arquivo de texto contendo uma matriz gravada com
- * `auxiliar()` e retorna ponteiro para seus elementos dispostos linearmente
- * num array (alocado com `malloc`, que deve ser `free` depois) ou `NULL` 
- * se a matriz tiver dimensoes indevidas.
- * 
- * @param[in,out] fhandle arquivo de texto que sera rebobinado e lido como matriz.
- * @return ponteiro para array de elementos da matriz lida ou `NULL`.
- * @see auxiliar()
- */
-int* alloc_matrix(FILE* fhandle) {
-    // rebobina arquivo e le qtd de linhas e colunas na 1a linha do texto
-    rewind(fhandle);
-    int lines, cols;
-    fscanf(fhandle, "%d %d\n", &lines, &cols);
-
-    // retornar NULL se a matriz tiver dimensoes indevidas
-    if (lines <= 0 || cols <= 0) {
-        return NULL;
-    }
-
-    // ler inteiros do arquivo recebido e guardar num array na ordem em que sao lidos
-    int* matrixdata = malloc(sizeof(int) * lines * cols);
-    for (int i = 1; i <= lines; i++) {
-        for (int j = 1; j <= cols; j++) {
-            int elemindex = (i * cols) + j - 1;
-            fscanf(fhandle, "%d ", &(matrixdata[elemindex]));
-            printf("elemindex %d\n", elemindex);
-        }
-    }
-    return matrixdata;
-}
-
-void test_alloc_matrix() {
-    //TODO
-}
-
-/**
- * Gera matrix de `int`s aleatorios e salva num arquivo de texto. Cuidado: 
- * `fhandle` sera truncado. `alloc_matrix()` pode ser usado para carregar a
- * matriz na heap.
- *
- * @param      l       quantidade de linhas da matrix a ser gerada.
- * @param      c       quantidade de colunas da matrix a ser gerada.
- * @param[out] fhandle arquivo de texto no qual a matriz sera gravada.
- * @see alloc_matrix()
- */
-void auxiliar(int l, int c, char* filepath) { 
-    printf("> Gravando matriz %d, %d em %s.\n", l, c, filepath);
-    // escrevendo linhas e colunas na primeira linha 
-    FILE* fhandle = fopen(filepath, "wt");
-    fprintf(fhandle, "%d %d\n", l, c);
-
-    // nao fazer nada quando for pedida matriz de dimensoes indevidas
-    if (l <= 0 || c <= 0) { 
-        return;
-    }
-
-    // usando wall clock como seed pro rng
-    srand((unsigned) timeofday_usec()); 
-
-    // gerar matrix lxc com inteiros aleatorios e escrever direto no arquivo
-    for (int i = 0; i < l; i++) {
-        for (int j = 0; j < c; j++) {
-            fprintf(fhandle, "%d ", rand());
-        }
-        fprintf(fhandle, "\n");
-    }
-    return;
-}
-
-void test_auxiliar() {
-    //FILE* fhandle = tmpfile();
-    //TODO
-
-
-}
-
-/**
- * Recebe dois arquivos de textos contendo matrizes geradas por `auxiliar()` e 
- * multiplica as duas matrizes de forma serial (sem concurrencia). Em seguida 
- * escreve em `mout` o tempo real (calculado usando `elapsed_miliseconds()`) 
- * gasto no calculo de cada elemento da matriz produto.
- * Cuidado: `m1` e `m2` serao rebobinados com `rewind()`. `mout` sera truncado 
- * antes de ser usado.
- *
- * @param[in, out] m1 matriz da esquerda da multiplicacao.
- * @param[in, out] m2 matriz da direita da multiplicacao.
- * @param[out]     mout matriz de saida.
- */
-void sequential(FILE* m1, FILE* m2, FILE* mout) {
-    rewind(m1);
-    rewind(m2);
-
-    int lines_m1, lines_m2, cols_m1, cols_m2;
-    fscanf(m1, "%d %d\n", &lines_m1, &cols_m1);
-    fscanf(m2, "%d %d\n", &lines_m2, &cols_m2);
-    printf("%d %d\n%d %d\n", lines_m1, cols_m1, lines_m2, cols_m2);
-
-    if (cols_m1 != lines_m2) {
-        printf("!!! ERRO: sequential: recebeu matrizes de tamanhos incompativeis\n");
-        printf("%d\n", __LINE__);
-        exit(-1);
-    }
-
-    int elem;
-    for (int i = 0; i < lines_m1; i++) {
-        for (int j = 0; j < cols_m1; j++) {
-            fscanf(m1, "%d", &elem);
-            printf("%d ", elem);
-        }
-        printf("\n");
-    }
-
-    return;
-}
-
-void test_sequential() {
-    //TODO
-}
-
-void test_routine() {
-    test_alloc_matrix();
-    test_auxiliar();
-    test_elapsed_miliseconds();
-    test_print_error();
-    test_print_test();
-    test_sequential();
-    test_timeofday_usec();
 }
 
 int main(int argc, char* argv[]) {
@@ -247,21 +27,22 @@ int main(int argc, char* argv[]) {
     }
 
     if (!strcmp(argv[1], "test")) {
-        test_routine();
+        matrix_test_routine();
         return 0;
     }
 
-    if (!strcmp(argv[1], "gen")) {
+    if (!strcmp(argv[1], "aux")) {
         if (argc < 5) {
-            print_help_gen();
+            print_help_auxiliar();
             return 0;
         }
-        auxiliar(strtol(argv[2], NULL, 10), strtol(argv[3], NULL, 10), argv[4]);
+        //auxiliar(strtol(argv[2], NULL, 10), strtol(argv[3], NULL, 10), argv[4]);
         return 0;
     }
 
-    printf("> Ma invocacao.\n");
+    printf("Maus argumentos.\n");
     print_help();
     return 1;
 }
+
 

@@ -73,5 +73,15 @@ int matrix_index_coord(Matrix m, int index, int linecol[2]);
  */
 void matrix_destroy(Matrix* m);
 
+/**
+ * Imprime matriz no stdout.
+ */
+void matrix_print(Matrix m);
+
+/**
+ * Roda testes das funcoes de matriz e imprime resultados no stdout.
+ */
+void matrix_test_routine(void);
+
 #endif
 
