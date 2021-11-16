@@ -1,4 +1,6 @@
-*.out
 doxygen_out/*
 matrices/*
-
+*.o
+*.out
+*.gch
+*.txt
