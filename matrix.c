@@ -93,12 +93,12 @@ void matrix_test_routine(void) {
         matrix_index_coord(m1, i, linecol);
         printf("(%d |-> %d, %d) ", i, linecol[0], linecol[1]);
     }
-    printf("salvando matriz id em ./test_matrix.txt.\n");
+    printf("\nsalvando matriz id em ./test_matrix.txt.\n");
     matrix_write("./test_matrix.txt", m2);
     printf("destruindo m2.\n");
     matrix_destroy(&m2);
     matrix_print(m2);
-    printf("restaurando m2.\n");
+    printf("restaurando m2 do arquivo.\n");
     m2 = matrix_read("./test_matrix.txt");
     matrix_print(m2);
     matrix_destroy(&m1);

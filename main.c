@@ -1,4 +1,6 @@
 #include "matrix.h"
+#include "auxiliar.h"
+#include <stdlib.h> // strtol
 #include <stdio.h> // printf
 #include <string.h>   // strcmp
 
@@ -36,7 +38,10 @@ int main(int argc, char* argv[]) {
             print_help_auxiliar();
             return 0;
         }
-        //auxiliar(strtol(argv[2], NULL, 10), strtol(argv[3], NULL, 10), argv[4]);
+        int lines = strtol(argv[2], NULL, 10);
+        int cols = strtol(argv[3], NULL, 10);
+        char* filepath = argv[4];
+        auxiliar(filepath, lines, cols);
         return 0;
     }
 
