@@ -1,7 +1,7 @@
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -pedantic -g
+CFLAGS = -Wall -Wextra -pedantic -g
 
-main.out : main.o matrix.o timetools.o auxiliar.o
+main.out : main.o matrix.o timetools.o auxiliar.o sequential.o
 	$(CC) -o $@ $^
 
 main.o : main.c
@@ -16,3 +16,5 @@ auxiliar.o : auxiliar.c
 timetools.o : timetools.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
+sequential.o : sequential.c
+	$(CC) $(CFLAGS) -o $@ -c $<
