@@ -18,5 +18,12 @@ long elapsed_miliseconds(const struct timeval t0, const struct timeval t1);
  */
 unsigned timeofday_usec();
 
+/**
+ * Usa `gettimeofday()` para retorna um timeval de agora.
+ */
+struct timeval timeval_now();
+
+void timetools_test_routine();
+
 #endif
 
