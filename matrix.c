@@ -5,7 +5,7 @@
 Matrix matrix_new(int lines, int columns) {
     if (lines <= 0 || columns <= 0)
         return (Matrix){ lines, columns, NULL };
-    return (Matrix){ lines, columns, malloc(sizeof(int) * lines * columns) };
+    return (Matrix){ lines, columns, calloc(lines * columns, sizeof(int)) };
 }
 
 void matrix_destroy(Matrix* m) {
@@ -57,7 +57,7 @@ int matrix_coord_index(Matrix m, int line, int col) {
 
 int matrix_index_coord(Matrix m, int index, int linecol[2]) {
     linecol[0] = index / m.columns + 1;
-    linecol[1] = index % m.lines + 1;
+    linecol[1] = index % m.columns + 1;
     return 0;
 }
 
@@ -76,6 +76,34 @@ void matrix_print(Matrix m) {
 }
 
 void matrix_test_routine(void) {
+    printf("matrix test routine.\n");
+    Matrix m1 = matrix_new(7, 11);
+    matrix_print(m1);
+    printf("matrix identidade 3x3 com matrix_coord_index.\n");
+    Matrix m2 = matrix_new(3,3);
+    for (int i = 1; i <= 3; i++) {
+        for (int j = 1; j <= 3; j++) {
+            m2.elems[matrix_coord_index(m2, i, j)] = i == j ? 1 : 0;
+        }
+    }
+    matrix_print(m2);
+    printf("checando se index_coord funciona na matrix 7x11.\n");
+    int linecol[2];
+    for (int i = 0; i < 77; i++) {
+        matrix_index_coord(m1, i, linecol);
+        printf("(%d |-> %d, %d) ", i, linecol[0], linecol[1]);
+    }
+    printf("salvando matriz id em ./test_matrix.txt.\n");
+    matrix_write("./test_matrix.txt", m2);
+    printf("destruindo m2.\n");
+    matrix_destroy(&m2);
+    matrix_print(m2);
+    printf("restaurando m2.\n");
+    m2 = matrix_read("./test_matrix.txt");
+    matrix_print(m2);
+    matrix_destroy(&m1);
+    matrix_destroy(&m2);
+    printf("fim matrix_test_routine.\n");
     return;
 }
 
