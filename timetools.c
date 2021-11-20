@@ -22,6 +22,7 @@ struct timeval timeval_now() {
 }
 
 void timetools_test_routine() {
+    // TODO testar timeval_now
     printf("timetools_test_routine.\n");
     struct timeval t0 = timeval_now();
     for (int i = 0; i < 10000; i++) {
