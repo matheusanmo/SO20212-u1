@@ -5,27 +5,40 @@
 #include "auxiliar.h"
 #include "sequential.h"
 #include "timetools.h"
+#include "threaded.h"
 #include <stdlib.h> // strtol
-#include <stdio.h> // printf
-#include <string.h>   // strcmp
+#include <stdio.h>  // printf
+#include <string.h> // strcmp
 
 /**
- * Imprime texto de ajuda da invocacao para gerar matrizes.
+ * Imprime texto de ajuda da invocacao para multiplicacao sequencial.
  */
-void print_help_auxiliar() {
-    printf("  `matrix aux linhas colunas filename`:\n");
-    printf("    gera matrix de inteiros de tamanho linhas x colunas e salva em filename (sera truncado)\n");
+void print_help_sequential() {
+    printf("  `matrix seq m1 m2 tout`:\n");
+    printf("    m1   caminho para matriz A\n");
+    printf("    m2   caminho para matriz B\n");
+    printf("    tout caminho para tempo de execucao do calculo\n");
     return;
 }
 
 /**
- * Imprime texto de ajuda da invocacao para multiplicacao serial.
+ * Imprime texto de ajuda da invocacao para multiplicacao simultanea threaded.
  */
-void print_help_sequential() {
-    printf("  `matrix seq m1 m2 mout`:\n");
+void print_help_threaded() {
+    printf("  `matrix seq m1 m2 tout p`:\n");
     printf("    m1   caminho para matriz A\n");
     printf("    m2   caminho para matriz B\n");
-    printf("    mout caminho para gravar matriz AB\n");
+    printf("    mout caminho para tempos de execucao de cada thread\n");
+    printf("    p    quantidade de elementos que cada thread vai calcular\n");
+    return;
+}
+
+/**
+ * Imprime texto de ajuda da invocacao paragerar matrizes aleatorias.
+ */
+void print_help_auxiliar() {
+    printf("  `matrix aux linhas colunas filename`:\n");
+    printf("    gera matrix de inteiros de tamanho linhas x colunas e salva em filename (sera truncado)\n");
     return;
 }
 
@@ -70,8 +83,22 @@ int main(int argc, char* argv[]) {
         }
         char* m1   = argv[2];
         char* m2   = argv[3];
-        char* mout = argv[4];
-        sequential(m1, m2, mout);
+        char* tout = argv[4];
+        sequential(m1, m2, tout);
+
+        return 0;
+    }
+
+    if (!strcmp(argv[1], "trd")) {
+        if (argc < 6) {
+            print_help_threaded();
+            return 0;
+        }
+        char* m1   = argv[2];
+        char* m2   = argv[3];
+        char* tout = argv[4];
+        int   p    = strtol(argv[5], NULL, 10);
+        threaded(m1, m2, tout, p);
 
         return 0;
     }

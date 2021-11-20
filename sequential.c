@@ -4,6 +4,8 @@
 #include <stdio.h> // printf fopen FILE fprintf fclose
 
 void sequential(char* m1_path, char* m2_path, char* mout_path) {
+    // TODO salvar apenas tempo em ms de execucacao
+    // TODO redocumentar doxygen e ajudas do programa pra refletir mudanca
     printf("sequential com m1='%s', m2='%s', m3='%s'\n", m1_path, m2_path, mout_path);
     Matrix m1   = matrix_read(m1_path);
     Matrix m2   = matrix_read(m2_path);
