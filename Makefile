@@ -1,6 +1,6 @@
 CC = clang
 CFLAGS = -Wall -Wextra -pedantic -g -pthread
-LDFLAGS = -pthread
+LDFLAGS = -pthread -lm
 
 main.out : main.o matrix.o timetools.o auxiliar.o sequential.o threaded.o
 	$(CC) $(LDFLAGS) -o $@ $^
