@@ -6,6 +6,8 @@
 void sequential(char* m1_path, char* m2_path, char* mout_path) {
     // TODO salvar apenas tempo em ms de execucacao
     // TODO redocumentar doxygen e ajudas do programa pra refletir mudanca
+    // TODO printar no stdout tempo
+    // TODO mudar formato de saida para concordar com threaded
     printf("sequential com m1='%s', m2='%s', m3='%s'\n", m1_path, m2_path, mout_path);
     Matrix m1   = matrix_read(m1_path);
     Matrix m2   = matrix_read(m2_path);
@@ -22,8 +24,9 @@ void sequential(char* m1_path, char* m2_path, char* mout_path) {
     struct timeval t0 = timeval_now();
     for (int i = 1; i <= mout.lines; i++) {
         for (int j = 1; j <= mout.columns; j++) {
-            int cij = 0; // cij = sigma_{k=1}^n a[i,k]*b[k,j]
-            for (int k = 1; k <= m1.columns; k++) { // n = dimensao comum entre m1 m2
+            // cij = sigma^n_{k=1} a[i,k]*b[k,j] onde n = dimensao comum entre m1 m2
+            int cij = 0; 
+            for (int k = 1; k <= m1.columns; k++) { 
                 int aik = m1.elems[matrix_coord_index(m1, i, k)];
                 int bkj = m2.elems[matrix_coord_index(m2, k, j)];
                 cij += aik * bkj;
