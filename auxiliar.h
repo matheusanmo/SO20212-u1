@@ -10,7 +10,7 @@
  * @param filepath arquivo de texto no qual a matriz sera gravada.
  * @see matrix_read()
  */
-int auxiliar(char* filepath, int lines, int columns);
+void auxiliar(char* filepath, int lines, int columns);
 
 #endif
 

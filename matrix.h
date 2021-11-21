@@ -1,6 +1,8 @@
 #ifndef MATRIX_H_
 #define MATRIX_H_
 
+#include <stdio.h> // FILE
+
 struct Matrix {
     int  lines;   /// valores negativos indicam que essa matriz foi destruida
     int  columns; /// valores negativas indicam que essa matriz foi destruida
@@ -28,7 +30,7 @@ Matrix matrix_new(int lines, int columns);
  * @return `Matrix` lida do arquivo passado
  * @see matrix_destroy() matrix_write()
  */
-Matrix matrix_read(char* filepath);
+Matrix matrix_read(FILE* in);
 
 /**
  * Grava uma `Matrix` num arquivo de texto. O arquivo a ser usado sera truncado, apagando
@@ -39,7 +41,7 @@ Matrix matrix_read(char* filepath);
  * @return numero maiores que 0 indicam erros. 0 indica sucesso
  * @see matrix_read()
  */
-int matrix_write(char* filepath, Matrix m);
+void matrix_write(FILE* out, Matrix m);
 
 /**
  * Retorna o indice de um elemento duma matriz a partir das suas coordenadas 1-indexadas.
@@ -62,7 +64,7 @@ int matrix_coord_index(Matrix m, int line, int col);
  * @return 0 indica sucesso, numeros positivos indicam erro
  * @see matrix_coord_index()
  */
-int matrix_index_coord(Matrix m, int index, int linecol[2]);
+void matrix_index_coord(Matrix m, int index, int linecol[2]);
 
 /**
  * `free` o array subjacente a matriz passada e altera os campos desta para
@@ -79,9 +81,16 @@ void matrix_destroy(Matrix* m);
 void matrix_print(Matrix m);
 
 /**
+ * produto escalar da i-esima linha de m1 pela j-esima coluna de m2
+ * nao checa se tem dimensioes compativeis p multiplicar; pode causar segfault
+ */
+int matrix_mult_prod(Matrix m1, Matrix m2, int line, int col);
+
+/**
  * Roda testes das funcoes de matriz e imprime resultados no stdout.
  */
 void matrix_test_routine(void);
+
 
 #endif
 

@@ -23,3 +23,6 @@ sequential.o : sequential.c
 threaded.o : threaded.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
+#forked.o : forked.c
+#	$(CC) $(CFLAGS) -o $@ -c $<
+

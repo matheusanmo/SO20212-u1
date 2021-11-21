@@ -5,7 +5,7 @@
 #include <pthread.h> 
 #include <math.h>     // ceil
 #include <stdlib.h>   // NULL, malloc, free
-#include <stdio.h>    // FILE printf fprintf
+#include <stdio.h>    // FILE printf fprintf tmpfile rewind
 #include <sys/time.h> // timeval
 
 
@@ -44,7 +44,7 @@ void threaded(char* m1_path, char* m2_path, char* tout_path, int p) {
         thread_args[i].t0  = t0; // tempo inicial q a thread vai receber
         pthread_t* t_id    = &(threads[i]);
         void* t_arg        = (void*) (&(thread_args[i]));
-        int thread_retcode = pthread_create(t_id, NULL, thread_start_void, t_arg);
+        pthread_create(t_id, NULL, thread_start_void, t_arg);
     }
 
     // preparar arquivo de saida
@@ -52,12 +52,14 @@ void threaded(char* m1_path, char* m2_path, char* tout_path, int p) {
     // juntar threads, escrever tempos de saida, fechar tmpfiles
     for (int i = 0; i < thread_count; i++) {
         void* retval;
-        int ret_code = pthread_join(threads[i], &retval);
-        int line, col, elem, time;
-        while (fscanf((FILE*) retval, "%d %d %d %d", &line, &col, &elem, &time)) {
+        pthread_join(threads[i], &retval);
+        int line, col, elem;
+        // ler todas linhas do arquivo retornado pela thread
+        while (fscanf((FILE*) retval, "%d %d %d", &line, &col, &elem)) {
             // saida formato
-            // linha coluna elemento tempo_gasto_pela_thread
-            fprintf(tout, "%d %d %d %d\n", line, col, elem, time);
+            // linha coluna elemento 
+            // na ultima linha: tempo gasto iniciando thread e calculando elementos
+            fprintf(tout, "%d %d %d\n", line, col, elem);
         }
         fclose((FILE*)retval);
     }
@@ -72,16 +74,28 @@ void threaded(char* m1_path, char* m2_path, char* tout_path, int p) {
 }
 
 FILE* thread_start(struct ThreadArg* ta) {
-    // calcular elementos
+    // abrir tmpfile
+    FILE* retfile = tmpfile();
+
+    // para usar funcao
+    Matrix fake = { ta->m1.lines, ta->m2.columns, NULL };
+
+    // calcular elementos, salvar em tmpfile
+    for (int i_elem = ta->first_index; i_elem < ta->last_index; i_elem++) {
+        int ij[2];
+        matrix_index_coord(fake, i_elem, ij);
+        int c_ij = matrix_mult_prod(ta->m1, ta->m2, ij[0], ij[1]);
+        fprintf(retfile, "%d %d %d\n", ij[0], ij[1], c_ij);
+    }
 
     // T1
+    // na ultima linha: tempo gasto iniciando thread e calculando elementos
+    struct timeval t1 = timeval_now();
+    fprintf(retfile, "%ld\n", elapsed_miliseconds(ta->t0, t1));
 
-    // salvar em tmpfile
-    // saida formato
-    // linha coluna elemento tempo_gasto_pela_thread
-
-    // retornar file*
-    return NULL;
+    // rewind e retornar file*
+    rewind(retfile);
+    return (void*) retfile;
 }
 
 void* thread_start_void(void* ta) {

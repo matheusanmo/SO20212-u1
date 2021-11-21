@@ -14,10 +14,10 @@
  * Imprime texto de ajuda da invocacao para multiplicacao sequencial.
  */
 void print_help_sequential() {
-    printf("  `matrix seq m1 m2 tout`:\n");
-    printf("    m1   caminho para matriz A\n");
-    printf("    m2   caminho para matriz B\n");
-    printf("    tout caminho para tempo de execucao do calculo\n");
+    printf("  `matrix seq m1 m2 csv`:\n");
+    printf("    m1  caminho para matriz A\n");
+    printf("    m2  caminho para matriz B\n");
+    printf("    csv caminho para csv de saida\n");
     return;
 }
 
@@ -25,11 +25,11 @@ void print_help_sequential() {
  * Imprime texto de ajuda da invocacao para multiplicacao simultanea threaded.
  */
 void print_help_threaded() {
-    printf("  `matrix seq m1 m2 tout p`:\n");
-    printf("    m1   caminho para matriz A\n");
-    printf("    m2   caminho para matriz B\n");
-    printf("    mout caminho para tempos de execucao de cada thread\n");
-    printf("    p    quantidade de elementos que cada thread vai calcular\n");
+    printf("  `matrix seq m1 m2 csv p`:\n");
+    printf("    m1  caminho para matriz A\n");
+    printf("    m2  caminho para matriz B\n");
+    printf("    csv caminho para csv de saida\n");
+    printf("    p   quantidade de elementos que cada thread vai calcular\n");
     return;
 }
 
@@ -69,10 +69,10 @@ int main(int argc, char* argv[]) {
             print_help_auxiliar();
             return 0;
         }
-        int lines      = strtol(argv[2], NULL, 10);
-        int cols       = strtol(argv[3], NULL, 10);
-        char* filepath = argv[4];
-        auxiliar(filepath, lines, cols);
+        int   lines    = strtol(argv[2], NULL, 10);
+        int   cols     = strtol(argv[3], NULL, 10);
+        char* csvpath  = argv[4];
+        auxiliar(csvpath, lines, cols);
         return 0;
     }
 
@@ -81,10 +81,10 @@ int main(int argc, char* argv[]) {
             print_help_sequential();
             return 0;
         }
-        char* m1   = argv[2];
-        char* m2   = argv[3];
-        char* tout = argv[4];
-        sequential(m1, m2, tout);
+        char* m1  = argv[2];
+        char* m2  = argv[3];
+        char* csv = argv[4];
+        sequential(m1, m2, csv);
 
         return 0;
     }
@@ -94,11 +94,11 @@ int main(int argc, char* argv[]) {
             print_help_threaded();
             return 0;
         }
-        char* m1   = argv[2];
-        char* m2   = argv[3];
-        char* tout = argv[4];
-        int   p    = strtol(argv[5], NULL, 10);
-        threaded(m1, m2, tout, p);
+        char* m1  = argv[2];
+        char* m2  = argv[3];
+        char* csv = argv[4];
+        int   p   = strtol(argv[5], NULL, 10);
+        threaded(m1, m2, csv, p);
 
         return 0;
     }

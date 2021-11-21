@@ -4,8 +4,8 @@
 #include <stdio.h> // printf
 #include <stdlib.h>   // rand srand
 
-int auxiliar(char* filepath, int lines, int columns) {
-    printf("> Gravando matriz %d, %d em %s.\n", lines, columns, filepath);
+void auxiliar(char* filepath, int lines, int columns) {
+    printf("Gerando matriz %d, %d em %s.\n", lines, columns, filepath);
     Matrix m = matrix_new(lines, columns);
 
     // usando wall clock como seed pro rng
@@ -16,6 +16,6 @@ int auxiliar(char* filepath, int lines, int columns) {
     }
     matrix_write(filepath, m);
     matrix_destroy(&m);
-    return 0;
+    return;
 }
 
