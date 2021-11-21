@@ -12,5 +12,7 @@
  */
 void auxiliar(char* filepath, int lines, int columns);
 
+void auxiliar_test_routine();
+
 #endif
 
