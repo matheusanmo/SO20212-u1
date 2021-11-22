@@ -25,7 +25,7 @@ void print_help_sequential() {
  * Imprime texto de ajuda da invocacao para multiplicacao simultanea threaded.
  */
 void print_help_threaded() {
-    printf("  `matrix seq m1 m2 csv p`:\n");
+    printf("  `matrix trd m1 m2 csv p`:\n");
     printf("    m1  caminho para matriz A\n");
     printf("    m2  caminho para matriz B\n");
     printf("    csv caminho para csv de saida\n");

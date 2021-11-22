@@ -38,6 +38,7 @@ void sequential(char* m1_path, char* m2_path, char* csv_out_path) {
 
     long dt = elapsed_miliseconds(t0, t1);
     fprintf(csv_out, "time, %ld\n", dt);
+    printf("time, %ld\n", dt);
 
     matrix_destroy(&m1);
     matrix_destroy(&m2);
