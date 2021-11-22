@@ -62,7 +62,7 @@ void threaded(char* m1_path, char* m2_path, char* tout_path, int p) {
     for (int i = 0; i < thread_count; i++) {
         void* retval;
         pthread_join(threads[i], &retval);
-        int line, col, elem, fscanf_code;
+        int line, col, elem;
         // ler todas linhas do arquivo retornado pela thread
         while (fscanf((FILE*) retval, "%d %d %d\n", &line, &col, &elem) == 3) {
             fprintf(tout, "elem, %d, %d, %d\n", line, col, elem);
