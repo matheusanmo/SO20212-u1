@@ -1,4 +1,5 @@
 #include "forked.h"
+#include <unistd.h> // pipe
 
 void forker(char* m1_path, char* m2_path, char* tout_path, int p) {
     // carregar m1 m2
@@ -23,21 +24,44 @@ void forker(char* m1_path, char* m2_path, char* tout_path, int p) {
             m1_path, m2_path, tout_path, p, elem_count, process_count);
 
     // preparar array de pipes que serao usados para sincronizar com filhos e receber arquivo de saida
-    X pipes = XX;
+    int pipes_read[process_count];
+    int pipes_write[process_count];
+    // abrir pipes e colocar descriptores nos arryas
+    int fd_buf[2];
+    for (int i = 0; i < process_count; i++) { 
+        if (pipe(fd_buf) < 0) {
+            printf("erro pipe " __FILE__ ":%d\n", __LINE__);
+            return;
+        }
+        pipes_read[i]  = fd_buf[0];
+        pipes_write[i] = fd_buf[1];
+    }
     // marcar tempo inicial
     struct timeval t0 = timeval_now();
     for (int i = 0; i < process_count; i++) {
         // forkar 
         // separar casos filho/pai/erro
+        switch (fork()) {
+            case -1:
+                printf("erro fork " __FILE__ ":%d\n", __LINE__);
+                return;
+
+            case 0: // filho
+                // fechar ends dos pipes (todos que nao vai usar + seu read)
+                // definir quais elementos calcular
+                // calcular elems
+                // salvar tempo em tmpfile
+                // retornar tmpfile pelo pipe
+                // fechar pipe
+                // morrer
+                break;
+
+            default: // pai
+                // 
+                break;
+
     }
     // filho:
-    // fechar ends dos pipes (todos que nao vai usar + seu read)
-    // definir quais elementos calcular
-    // calcular elems
-    // salvar tempo em tmpfile
-    // retornar tmpfile pelo pipe
-    // fechar pipe
-    // morrer
 
     // pai:
     int process_mean_time = 0;
